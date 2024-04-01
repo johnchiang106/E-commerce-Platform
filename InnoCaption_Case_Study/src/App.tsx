@@ -1,14 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { ProductProps } from './types';
 import ProductPage from './components/ProductPage'
 import CartPage from './components/CartPage'
 import './App.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('product'); // State to track active tab
+  const [cart, setCart] = useState<{ product: ProductProps, amount: number }[]>([]);
 
   // Function to handle tab click and switch active tab
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
+  };
+
+  const addToCart = (product: ProductProps, quantity: number) => {
+    const existingItem = cart.find(item => item.product.id === product.id);
+    if (existingItem) {
+      setCart(cart.map(item => {
+        if (item.product.id === product.id) {
+          return { ...item, amount: item.amount + quantity };
+        }
+        return item;
+      }));
+    } else {
+      setCart([...cart, { product, amount: quantity }]);
+    }
+  };
+
+  const removeFromCart = (productId: number) => {
+    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
   };
   
   return (
@@ -35,48 +55,11 @@ function App() {
           </span>
       </div>
       <div className="container">
-        {activeTab === 'product' && <ProductPage />}
-        {activeTab === 'cart' && <CartPage />}
+        {activeTab === 'product' && <ProductPage addToCart={addToCart} />}
+        {activeTab === 'cart' && <CartPage cart={cart} removeFromCart={removeFromCart} />}
       </div>
     </>
   )
-  /*
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    fetch('https://dummyjson.com/products')
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error fetching data:', error));
-  }, []); // empty dependency array to run only once when component mounts
-
-  return (
-    <div className="App">
-      <span id="showInfoPage" className="tab"><img src="https://upload.cc/i1/2024/04/01/QJ5IXd.png" />
-      </span>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
-  */
 }
 
 export default App

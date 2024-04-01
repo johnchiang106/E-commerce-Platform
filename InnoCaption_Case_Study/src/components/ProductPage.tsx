@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
+import { ProductProps } from '../types';
 
-interface Product {
-    id: number;
-    title: string;
-    price: number;
-    // Add other properties as needed
+interface ProductPageProps {
+    addToCart: (product: ProductProps, quantity: number) => void;
 }
 
-function ProductPage() {
-    const [products, setProducts] = useState<Product[]>([]); // Specify the type as Product[]
+const ProductPage: React.FC<ProductPageProps> = ({ addToCart }) => {
+    const [products, setProducts] = useState<ProductProps[]>([]); // Specify the type as ProductProps[]
 
     useEffect(() => {
         fetch('https://dummyjson.com/products')
@@ -22,16 +20,17 @@ function ProductPage() {
     }, []); // empty dependency array to fetch data only once when component mounts
     
     return (
-      <div id="prodPage" className="page">
-        {products.map(product => (
-            <div key={product.id} className="prod card">
-            <strong>{product.title}</strong><br />
-            <span className="red">${product.price}</span><br />
-            <button className="fancy-button buy" data-name={product.title} data-price={product.price}>Buy</button>
-            </div>
-        ))}
-      </div>
-    );
+    <div id="prodPage" className="page">
+      {products.map(product => (
+        <div key={product.id} className="prod card">
+          <strong>{product.title}</strong><br />
+          <span className="red">${product.price}</span><br />
+          {/* <input type="number" min="1" defaultValue="1" ref={input => product.inputRef = input} /> */}
+          <button className="fancy-button buy" onClick={() => addToCart(product, 1)}>Add to Cart</button>
+        </div>
+      ))}
+    </div>
+  );
   }
   
   export default ProductPage;
