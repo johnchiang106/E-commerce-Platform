@@ -1,8 +1,46 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
+import ProductPage from './components/ProductPage'
+import CartPage from './components/CartPage'
 import './App.css'
 
 function App() {
+  const [activeTab, setActiveTab] = useState('product'); // State to track active tab
+
+  // Function to handle tab click and switch active tab
+  const handleTabClick = (tabName: string) => {
+    setActiveTab(tabName);
+  };
+  
+  return (
+    <>
+      <div className="banner">
+          <h1>InnoCaption Shopping</h1>
+          <span id="showProdPage"
+            className={`tab ${activeTab === 'product' ? 'active' : ''}`}
+            onClick={() => handleTabClick('product')}
+          >
+            Product List
+          </span>
+          <span id="showCartPage"
+            className={`tab ${activeTab === 'cart' ? 'active' : ''}`}
+            onClick={() => handleTabClick('cart')}
+          >
+            Cart
+          </span>
+          <span id="showInfoPage"
+            className={`tab ${activeTab === 'account' ? 'active' : ''}`}
+            onClick={() => handleTabClick('account')}
+          >
+            Account
+          </span>
+      </div>
+      <div className="container">
+        {activeTab === 'product' && <ProductPage />}
+        {activeTab === 'cart' && <CartPage />}
+      </div>
+    </>
+  )
+  /*
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -14,6 +52,8 @@ function App() {
 
   return (
     <div className="App">
+      <span id="showInfoPage" className="tab"><img src="https://upload.cc/i1/2024/04/01/QJ5IXd.png" />
+      </span>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo" alt="Vite logo" />
@@ -36,6 +76,7 @@ function App() {
       </p>
     </div>
   )
+  */
 }
 
 export default App
