@@ -30,6 +30,23 @@
   padding: 10px;
   border: 1px solid #eee;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title-container {
+  height: 80px;
+}
+.prod strong {
+  vertical-align: middle;
+}
+.prod del {
+  color: gray;
+}
+.prod img {
+  height: 80px;
+  width: auto;
+  margin-bottom: 5px;
 }
 #prodPage {
   display: flex;
@@ -38,6 +55,7 @@
 }
 
 .fancy-button {
+  margin-top: 10px;
   padding: 5px 15px;
   border-width: 0;
   color: #fff;
