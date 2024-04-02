@@ -80,7 +80,7 @@ function App() {
           </span>
       </div>
       <div className="container">
-        {activeTab === 'product' && <ProductPage products={products} addToCart={addToCart} />}
+        {activeTab === 'product' && <ProductPage cart={cart} products={products} addToCart={addToCart} handleTabClick={handleTabClick} />}
         {activeTab === 'cart' && <CartPage cart={cart} removeFromCart={removeFromCart} handleQuantityChange={handleQuantityChange} />}
       </div>
     </>
