@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ProductProps } from '../types';
+import ProductModal from './ProductModal'
 
 interface ProductPageProps {
     cart: { product: ProductProps, amount: number }[];
@@ -12,6 +13,8 @@ const ProductPage: React.FC<ProductPageProps> = ({ cart, products, addToCart, ha
     const [filterText, setFilterText] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [filteredProductIds, setFilteredProductIds] = useState<number[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null);
 
     useEffect(() => {
         const fetchProductIds = async () => {
@@ -73,6 +76,16 @@ const ProductPage: React.FC<ProductPageProps> = ({ cart, products, addToCart, ha
         }
     };
 
+    const openModal = (product: ProductProps) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedProduct(null);
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             <div>
@@ -89,17 +102,20 @@ const ProductPage: React.FC<ProductPageProps> = ({ cart, products, addToCart, ha
                     ))}
                 </select>
             </div>
-            <div id="prodPage" className="page">
-                {filteredProducts.map(product => (
-                    <div key={product.id} className="prod card">
-                        <div className="title-container"><strong>{product.title}</strong></div>
-                        <img src={product.images[0]} alt={product.title} /><br />
-                        <del>${product.price}</del><br />
-                        <span className="red">${product.actualPrice}</span><br />
-                        {renderButton(product)}
-                    </div>
-                ))}
-            </div>
+            {!isModalOpen && (
+                <div id="prodPage" className="page">
+                    {filteredProducts.map(product => (
+                        <div key={product.id} className="prod card">
+                            <strong className="title-container" onClick={() => openModal(product)}>{product.title}</strong>
+                            <img src={product.images[0]} alt={product.title} onClick={() => openModal(product)} /><br />
+                            <del>${product.price}</del><br />
+                            <span className="red">${product.actualPrice}</span><br />
+                            {renderButton(product)}
+                        </div>
+                    ))}
+                </div>
+            )}
+            <ProductModal isOpen={isModalOpen} onClose={closeModal} product={selectedProduct} />
         </>
     );
 }

@@ -146,3 +146,45 @@
 .cart-item button:hover {
   background-color: #c82333; /* Darker red background color on hover */
 }
+
+/* Style for the Modal */
+.modal-mask {
+  display: flex;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  justify-content: space-between;
+}
+
+.modal-image {
+  display: flex;
+  align-items: center;
+}
+
+.modal-image img {
+  max-height: 400px;
+}
+
+.modal-image button {
+  padding: 5px 10px;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-content del {
+  color: gray;
+}
+
+.close-button {
+  margin-right: 10px;
+}
+
+.title-container {
+  flex-grow: 1; /* Expand to take remaining space */
+}
