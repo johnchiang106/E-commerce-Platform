@@ -5,12 +5,12 @@ import CartPage from './components/CartPage'
 import './App.css'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('product'); // State to track active tab
+  const [activeTab, setActiveTab] = useState('product');
   const [cart, setCart] = useState<{ product: ProductProps, amount: number }[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products')
+    fetch('https://dummyjson.com/products?limit=0')
       .then(res => res.json())
       .then(data => {
         if (data && data.products) {
@@ -24,7 +24,6 @@ function App() {
       .catch(error => console.error('Error fetching products:', error));
   }, []); // empty dependency array to fetch data only once when component mounts
 
-  // Function to handle tab click and switch active tab
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
