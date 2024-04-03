@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ProductProps } from './types';
+import { ProductProps, CartItemProps } from './types';
 import ProductPage from './components/ProductPage'
 import CartPage from './components/CartPage'
 import './App.css'
@@ -7,7 +7,7 @@ import LogInPage from './components/LogInPage';
 
 function App() {
   const [activeTab, setActiveTab] = useState('product');
-  const [cart, setCart] = useState<{ product: ProductProps, amount: number }[]>([]);
+  const [cart, setCart] = useState<CartItemProps[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
 
   useEffect(() => {
@@ -29,29 +29,50 @@ function App() {
     setActiveTab(tabName);
   };
 
-  const addToCart = (product: ProductProps, quantity: number) => {
-    const existingItem = cart.find(item => item.product.id === product.id);
-    if (existingItem) {
-      setCart(cart.map(item => {
-        if (item.product.id === product.id) {
-          return { ...item, amount: item.amount + quantity };
-        }
-        return item;
-      }));
+  const addToCart = (product: ProductProps) => {
+    // Calculate total price after discount
+    const discountPrice = Math.round(product.price * (100 - product.discountPercentage)) / 100;
+
+    // Create a new CartItemProps object
+    const newItem: CartItemProps = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      quantity: 1, // Assuming initially adding one quantity to the cart
+      total: discountPrice, // Initial total considering discount
+      discountPercentage: product.discountPercentage,
+      discountPrice: discountPrice,
+      thumbnail: product.images[0], // Assuming first image as thumbnail
+    };
+
+    // Check if the item already exists in the cart
+    const existingItemIndex = cart.findIndex(item => item.id === product.id);
+
+    if (existingItemIndex !== -1) {
+      // If item exists, update its quantity and total
+      const updatedCart = [...cart];
+      updatedCart[existingItemIndex].quantity += 1;
+      updatedCart[existingItemIndex].total += discountPrice;
+      setCart(updatedCart);
     } else {
-      setCart([...cart, { product, amount: quantity }]);
+      // If item doesn't exist, add it to the cart
+      setCart([...cart, newItem]);
     }
   };
 
+  const updateCart = (newCart: CartItemProps[]) => {
+    setCart(newCart);
+  };
+
   const removeFromCart = (productId: number) => {
-    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
   };
 
   const handleQuantityChange = (productId: number, newQuantity: number) => {
-    let newQ = Math.max(1, newQuantity);
+    const newQ = Math.max(1, newQuantity);
     setCart(prevCart =>
       prevCart.map(item =>
-        item.product.id === productId ? { ...item, amount: newQ } : item
+        item.id === productId ? { ...item, quantity: newQ, total: Math.round((item.discountPrice * newQ) * 100) / 100 } : item
       )
     );
   };
@@ -82,7 +103,7 @@ function App() {
       <div className="container">
         {activeTab === 'product' && <ProductPage cart={cart} products={products} addToCart={addToCart} handleTabClick={handleTabClick} />}
         {activeTab === 'cart' && <CartPage cart={cart} removeFromCart={removeFromCart} handleQuantityChange={handleQuantityChange} />}
-        {activeTab === 'account' && <LogInPage cart={cart} removeFromCart={removeFromCart} />}
+        {activeTab === 'account' && <LogInPage updateCart={updateCart} />}
       </div>
     </>
   )

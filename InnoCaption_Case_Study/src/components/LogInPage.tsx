@@ -1,16 +1,46 @@
 import React from 'react';
-import { ProductProps } from '../types';
+import { useState } from 'react'
+import { ProductProps, CartItemProps } from '../types';
 
 interface LogInProps {
-  cart: { product: ProductProps, amount: number }[];
-  removeFromCart: (productId: number) => void;
+    updateCart: (newCart: CartItemProps[]) => void;
 }
 
-const LogInPage: React.FC<LogInProps> = ({ cart, removeFromCart }) => {
+const LogInPage: React.FC<LogInProps> = ({ updateCart }) => {
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleLogInButtonClick = () => {
-        // setCurrentImageIndex((prevIndex) => (prevIndex - 1 + (product?.images.length || 0)) % (product?.images.length || 0));
-        console.log("hi");
+        fetch('https://dummyjson.com/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+            username,
+            password,
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+            throw new Error('Invalid username or password');
+            }
+            return res.json();
+        })
+        .then(userData => {
+            // If login is successful, fetch user's cart
+            fetch(`https://dummyjson.com/carts/user/${userData.id}`)
+            .then(res => res.json())
+            .then(newCart => {
+                // Call the updateCart function passed from parent component
+                updateCart(newCart);
+            })
+            .catch(error => {
+                console.error('Error fetching user cart:', error);
+            });
+        })
+        .catch(error => {
+            console.error('Error logging in:', error);
+        });
     };
 
   return (
@@ -21,13 +51,17 @@ const LogInPage: React.FC<LogInProps> = ({ cart, removeFromCart }) => {
             <input
             type="string"
             size={16}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             />
         </div>
         <div className="user-input">
             <p>Password:</p>
             <input
-            type="string"
+            type="password"
             size={16}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             />
         </div>
       </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { ProductProps } from '../types';
+import { ProductProps, CartItemProps } from '../types';
 import ProductModal from './ProductModal'
 
 interface ProductPageProps {
-    cart: { product: ProductProps, amount: number }[];
+    cart: CartItemProps[];
     products: ProductProps[];
-    addToCart: (product: ProductProps, quantity: number) => void;
+    addToCart: (product: ProductProps) => void;
     handleTabClick: (tabName: string) => void;
 }
 
@@ -60,19 +60,19 @@ const ProductPage: React.FC<ProductPageProps> = ({ cart, products, addToCart, ha
     };
 
     const isInCart = (productId: number) => {
-        return cart.some(item => item.product.id === productId);
+        return cart.some(item => item.id === productId);
     };
 
     const getCartAmount = (productId: number) => {
-        const cartItem = cart.find(item => item.product.id === productId);
-        return cartItem ? cartItem.amount : 0;
+        const cartItem = cart.find(item => item.id === productId);
+        return cartItem ? cartItem.quantity : 0;
     };
 
     const renderButton = (product: ProductProps) => {
         if (isInCart(product.id)) {
             return <button className="fancy-button amount" onClick={() => handleTabClick("cart")}>{getCartAmount(product.id)}</button>;
         } else {
-            return <button className="fancy-button add" onClick={() => addToCart(product, 1)}>Add to Cart</button>;
+            return <button className="fancy-button add" onClick={() => addToCart(product)}>Add to Cart</button>;
         }
     };
 
