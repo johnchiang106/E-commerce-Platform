@@ -3,6 +3,7 @@ import { ProductProps } from './types';
 import ProductPage from './components/ProductPage'
 import CartPage from './components/CartPage'
 import './App.css'
+import LogInPage from './components/LogInPage';
 
 function App() {
   const [activeTab, setActiveTab] = useState('product');
@@ -81,6 +82,7 @@ function App() {
       <div className="container">
         {activeTab === 'product' && <ProductPage cart={cart} products={products} addToCart={addToCart} handleTabClick={handleTabClick} />}
         {activeTab === 'cart' && <CartPage cart={cart} removeFromCart={removeFromCart} handleQuantityChange={handleQuantityChange} />}
+        {activeTab === 'account' && <LogInPage cart={cart} removeFromCart={removeFromCart} />}
       </div>
     </>
   )

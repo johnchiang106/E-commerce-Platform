@@ -188,3 +188,17 @@
 .title-container {
   flex-grow: 1; /* Expand to take remaining space */
 }
+
+/* Style for the Log in page */
+#LogInPage {
+  width: 100%;
+  align-items: center;
+}
+
+.user-input {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
