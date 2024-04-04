@@ -5,6 +5,8 @@ InnoCaption Engineer Summer Intern Technical Case Study
 This is a web page for an e-commerce platform using React. This platform uses this dummy API: [https://dummyjson.com/docs](https://dummyjson.com/docs) as a product database.
 
 ## Set up & Run
+Install [Node.js](https://nodejs.org/en/download)  
+
 **cd InnoCaption_Case_Study  
 npm install  
 npm run dev**  (or **npm start**)
