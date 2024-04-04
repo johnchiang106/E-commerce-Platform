@@ -202,3 +202,7 @@
   justify-content: space-between;
   padding: 10px;
 }
+
+.error-message {
+  color: red;
+}

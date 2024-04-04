@@ -20,6 +20,6 @@ export type CartItemProps = {
   quantity: number;
   total: number;
   discountPercentage: number;
-  discountPrice: number;
+  discountedPrice: number;
   thumbnail: string;
 };

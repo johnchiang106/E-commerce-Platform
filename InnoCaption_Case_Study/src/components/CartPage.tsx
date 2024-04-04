@@ -18,7 +18,7 @@ const CartPage: React.FC<CartPageProps> = ({ cart, removeFromCart, handleQuantit
             </div>
             <div className="product-details">
               <strong>{product.title}</strong>
-              <p>Price: ${product.discountPrice}</p>
+              <p>Price: ${product.discountedPrice}</p>
             </div>
             <div className="quantity-input">
               <p>Amount:</p>

@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import { ProductProps, CartItemProps } from './types';
 import ProductPage from './components/ProductPage'
 import CartPage from './components/CartPage'
-import './App.css'
 import LogInPage from './components/LogInPage';
+import './App.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('product');
   const [cart, setCart] = useState<CartItemProps[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [firstname, setFirstname] = useState('');
 
   useEffect(() => {
     fetch('https://dummyjson.com/products?limit=0')
@@ -31,7 +33,7 @@ function App() {
 
   const addToCart = (product: ProductProps) => {
     // Calculate total price after discount
-    const discountPrice = Math.round(product.price * (100 - product.discountPercentage)) / 100;
+    const dPrice = Math.round(product.price * (100 - product.discountPercentage)) / 100;
 
     // Create a new CartItemProps object
     const newItem: CartItemProps = {
@@ -39,9 +41,9 @@ function App() {
       title: product.title,
       price: product.price,
       quantity: 1, // Assuming initially adding one quantity to the cart
-      total: discountPrice, // Initial total considering discount
+      total: dPrice, // Initial total considering discount
       discountPercentage: product.discountPercentage,
-      discountPrice: discountPrice,
+      discountedPrice: dPrice,
       thumbnail: product.images[0], // Assuming first image as thumbnail
     };
 
@@ -52,7 +54,7 @@ function App() {
       // If item exists, update its quantity and total
       const updatedCart = [...cart];
       updatedCart[existingItemIndex].quantity += 1;
-      updatedCart[existingItemIndex].total += discountPrice;
+      updatedCart[existingItemIndex].total += dPrice;
       setCart(updatedCart);
     } else {
       // If item doesn't exist, add it to the cart
@@ -72,7 +74,7 @@ function App() {
     const newQ = Math.max(1, newQuantity);
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === productId ? { ...item, quantity: newQ, total: Math.round((item.discountPrice * newQ) * 100) / 100 } : item
+        item.id === productId ? { ...item, quantity: newQ, total: Math.round((item.discountedPrice * newQ) * 100) / 100 } : item
       )
     );
   };
@@ -103,7 +105,8 @@ function App() {
       <div className="container">
         {activeTab === 'product' && <ProductPage cart={cart} products={products} addToCart={addToCart} handleTabClick={handleTabClick} />}
         {activeTab === 'cart' && <CartPage cart={cart} removeFromCart={removeFromCart} handleQuantityChange={handleQuantityChange} />}
-        {activeTab === 'account' && <LogInPage updateCart={updateCart} />}
+        {/* {activeTab === 'account' && <LogInPage updateCart={updateCart} />} */}
+        {activeTab === 'account' && <LogInPage updateCart={updateCart} loggedIn={loggedIn} setLoggedIn={setLoggedIn} firstname={firstname} setFirstname={setFirstname} />}
       </div>
     </>
   )
