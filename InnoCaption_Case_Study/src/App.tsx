@@ -35,7 +35,6 @@ function App() {
     // Calculate total price after discount
     const dPrice = Math.round(product.price * (100 - product.discountPercentage)) / 100;
 
-    // Create a new CartItemProps object
     const newItem: CartItemProps = {
       id: product.id,
       title: product.title,
@@ -62,12 +61,28 @@ function App() {
     }
   };
 
-  const updateCart = (newCart: CartItemProps[]) => {
-    setCart(newCart);
-  };
-
   const removeFromCart = (productId: number) => {
     setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  const loadCart = (newCart: CartItemProps[]) => {
+    let updatedCart = cart;
+    newCart.forEach(newCartItem => {
+      const existingIndex = updatedCart.findIndex(item => item.id === newCartItem.id);
+      if (existingIndex !== -1) {
+        // If item already exists in cart, accumulate the quantity
+        updatedCart[existingIndex].quantity += newCartItem.quantity;
+        updatedCart[existingIndex].total += newCartItem.total;
+      } else {
+        // If item doesn't exist, add it to the cart
+        updatedCart.push(newCartItem);
+      }
+    });
+    setCart(updatedCart);
   };
 
   const handleQuantityChange = (productId: number, newQuantity: number) => {
@@ -105,8 +120,7 @@ function App() {
       <div className="container">
         {activeTab === 'product' && <ProductPage cart={cart} products={products} addToCart={addToCart} handleTabClick={handleTabClick} />}
         {activeTab === 'cart' && <CartPage cart={cart} removeFromCart={removeFromCart} handleQuantityChange={handleQuantityChange} />}
-        {/* {activeTab === 'account' && <LogInPage updateCart={updateCart} />} */}
-        {activeTab === 'account' && <LogInPage updateCart={updateCart} loggedIn={loggedIn} setLoggedIn={setLoggedIn} firstname={firstname} setFirstname={setFirstname} />}
+        {activeTab === 'account' && <LogInPage loadCart={loadCart} clearCart={clearCart} loggedIn={loggedIn} setLoggedIn={setLoggedIn} firstname={firstname} setFirstname={setFirstname}/>}
       </div>
     </>
   )

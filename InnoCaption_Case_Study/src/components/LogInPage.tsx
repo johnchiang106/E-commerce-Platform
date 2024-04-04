@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { CartItemProps } from '../types';
 
 interface LogInProps {
-    updateCart: (newCart: CartItemProps[]) => void;
+    loadCart: (newCart: CartItemProps[]) => void;
+    clearCart: () => void;
     loggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
     firstname: string;
     setFirstname: (firstName: string) => void;
 }
 
-const LogInPage: React.FC<LogInProps> = ({ updateCart, loggedIn, setLoggedIn, firstname, setFirstname }) => {
+const LogInPage: React.FC<LogInProps> = ({ loadCart, clearCart, loggedIn, setLoggedIn, firstname, setFirstname }) => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -25,29 +26,30 @@ const LogInPage: React.FC<LogInProps> = ({ updateCart, loggedIn, setLoggedIn, fi
             const user = data.users.find((user: any) => user.username === username && user.password === password);
             
             if (user) {
-                console.log("Logged in!");
                 setFirstname(user.firstName);
                 setLoggedIn(true);
                 // Fetch cart data for the found user
-                const cartResponse = await fetch(`https://dummyjson.com/carts/${user.id}`);
+                const cartResponse = await fetch(`https://dummyjson.com/carts/user/${user.id}`);
                 const responseData = await cartResponse.json();
-                const products: CartItemProps[] = responseData.products;
-                
-                // Mapping over products array to create CartItemProps objects
-                const cartItems = products.map(product => ({
-                    id: product.id,
-                    title: product.title,
-                    price: product.price,
-                    quantity: product.quantity,
-                    total: product.total,
-                    discountPercentage: product.discountPercentage,
-                    discountedPrice: product.discountedPrice,
-                    thumbnail: product.thumbnail
-                }));
-    
-                // Update cart using the provided updateCart function
-                updateCart(cartItems);
-                setErrorMessage('');
+                if(responseData.carts[0]){
+                    const products: CartItemProps[] = responseData.carts[0].products;
+                    
+                    // Mapping over products array to create CartItemProps objects
+                    const cartItems = products.map(product => ({
+                        id: product.id,
+                        title: product.title,
+                        price: Math.round(product.price / product.quantity * 100) / 100,
+                        quantity: product.quantity,
+                        total: product.discountedPrice,
+                        discountPercentage: product.discountPercentage,
+                        discountedPrice: Math.round(product.discountedPrice / product.quantity * 100) / 100,
+                        thumbnail: product.thumbnail
+                    }));
+        
+                    // Update cart using the provided loadCart function
+                    loadCart(cartItems);
+                    setErrorMessage('');
+                }
             } else {
                 // Handle invalid login
                 setErrorMessage("Invalid username or password!");
@@ -63,7 +65,7 @@ const LogInPage: React.FC<LogInProps> = ({ updateCart, loggedIn, setLoggedIn, fi
         setPassword('');
         setFirstname('');
         setLoggedIn(false);
-        updateCart([]);
+        clearCart();
     };
 
   return (

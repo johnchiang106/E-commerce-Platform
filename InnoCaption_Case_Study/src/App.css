@@ -43,6 +43,7 @@
 }
 .prod strong {
   vertical-align: middle;
+  cursor: pointer;
 }
 .prod del {
   color: gray;
@@ -51,6 +52,7 @@
   height: 80px;
   width: auto;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 #prodPage {
   display: flex;
