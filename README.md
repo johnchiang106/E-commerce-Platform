@@ -1,4 +1,4 @@
-# InnoCaption_Case_Study
+# E-commerce Platform
 InnoCaption Engineer Summer Intern Technical Case Study
 
 ## Introduction
@@ -8,7 +8,7 @@ Here is a **demo video** of the platform web page: [link](https://drive.google.c
 ## Set up & Run
 Install [Node.js](https://nodejs.org/en/download)  
 
-**cd InnoCaption_Case_Study  
+**cd E_commerce_Platform  
 npm install  
 npm run dev**  (or **npm start**)
 
